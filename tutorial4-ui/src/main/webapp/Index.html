@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Traffic Visualization</title>
+
+<script type="text/javascript" src="assets/jquery-1.11.1.js"></script>
+<link rel="stylesheet" href="assets/leaflet-0.7.3/leaflet.css" />
+<script src="assets/leaflet-0.7.3/leaflet-src.js"></script>
+
+<!-- Data table implementation -->
+<link rel="stylesheet" href="assets/DataTables-1.10.0/media/css/jquery.dataTables.css" />
+<script src="assets/DataTables-1.10.0/media/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="assets/app.css">
+
+
+<style type="text/css">
+body{	
+	height: 100%;
+	font-family:"Calibri (Body)";
+	text-align: center;
+	
+	
+	/*background-color: red;*/
+}
+.dataslots {
+	margin-left: auto;
+    margin-right: auto;
+	height: 500px;
+	width : 90% !Important;	
+	/* max-width: 800px; */
+}
+.ex_highlight{
+	background-color: #F53874  !Important;
+}
+
+
+/* datatable fixes */
+#maptable_length {
+	display:none;
+}
+#maptable_filter, #maptable_paginate, #maptable_info{
+	display: none;
+}
+</style>
+</head>
+<body>
+	<div class='dataslots' style='height: inherit; '><img style='display: block;margin-left: auto;margin-right: auto;' src="assets/hdp21_logo.png"></div>
+	<div style="margin-top: 5px "></div>
+	<div id="map" class='dataslots'></div>
+	<div  class='dataslots'><div>	
+		<table id="maptable" class="cell-border">
+		<thead>
+		        <tr>
+		            <th>Driver Name</th>
+		            <th>Route Name</th>
+		            <th>Truck Id</th>
+		            <th>Driver Id</th>
+		            <th>Route Id</th>
+		            <th>Timestamp</th>		           
+		            <th>Longitude</th>
+		            <th>Latitude</th>		           
+		            <th>Last Interaction</th>
+		            <th>Total Interaction</th>
+		        </tr>
+		    </thead>		    
+		    
+		</table>
+	</div></div>
+	<script type="text/javascript">
+		app = {};
+		//defining icons
+		app.icons = {};
+		app.icons.red = L.icon({
+			iconUrl: 'assets/icons/truck_red.png',
+		});
+		app.icons.black = L.icon({
+			iconUrl: 'assets/icons/truck_black.png',
+		});
+		app.icons.orange = L.icon({
+			iconUrl: 'assets/icons/truck_orange.png',
+		});
+		app.icons.yellow= L.icon({
+			iconUrl: 'assets/icons/truck_yellow.png',
+		});
+		marker_map = {};
+		//defining poll function
+		app.poll = function (){			
+			$.ajax({
+				url: "rest/coordinates",
+			}).done(function(data) {
+				//distroy existing datatable
+				$('#maptable').dataTable().fnDestroy();
+				
+				var tabledata = [];
+				tabledata.push('<thead><tr><th>Driver Name</th><th>Route Name</th><th>Timestamp</th><th>Longitude</th><th>Latitude</th><th>Last Interaction</th><th>Total Interaction</th></tr></thead>');
+				tabledata.push('<tbody>');
+				
+				$.each(data, function(index, d) {
+					if(!marker_map[d.truck_id]){
+						//console.log('new');
+						marker_map[d.truck_id] =  new L.marker([d.latitude,d.longitude])						
+						.addTo(map);
+					}else{
+						var newLatLng = new L.LatLng(d.latitude,d.longitude);						
+						marker_map[d.truck_id].setLatLng(newLatLng);				
+						
+						//console.log('etewr');						
+					}
+					
+					var icon_opts = {iconUrl: 'assets/icons/truck_red.png'}
+					//changing icon
+					if(d.total_violations > 20){
+						icon_opts = {iconUrl: 'assets/icons/truck_red_'+d.truck_id +'.png'};
+						marker_map[d.truck_id].setIcon(L.icon(icon_opts));
+						if(marker_map[d.truck_id]._popup){
+							if(marker_map[d.truck_id]._popup._isOpen){
+								marker_map[d.truck_id].setPopupContent(d.total_violations);
+							}else{
+								marker_map[d.truck_id].setPopupContent(d.total_violations);
+								//marker_map[d.truck_id].openPopup();									
+							}							
+						}else{
+							marker_map[d.truck_id].bindPopup(d.total_violations);
+							marker_map[d.truck_id].openPopup();	
+						}
+						//console.log('map opened');
+					}else if(d.total_violations > 10){
+						icon_opts = {iconUrl: 'assets/icons/truck_orange_'+d.truck_id +'.png'}
+						marker_map[d.truck_id].setIcon(L.icon(icon_opts));
+					}else if(d.total_violations > 5){
+						icon_opts = {iconUrl: 'assets/icons/truck_yellow_'+d.truck_id +'.png'}
+						marker_map[d.truck_id].setIcon(L.icon(icon_opts));
+					}else{
+						icon_opts = {iconUrl: 'assets/icons/truck_black_'+d.truck_id +'.png'}
+						marker_map[d.truck_id].setIcon(L.icon(icon_opts));
+					}
+					
+					
+					//updating html
+					if(d.total_violations > 20){
+						tabledata.push('<tr class=' +'ex_highlight'+'>');	
+					}else{
+						tabledata.push('<tr>');	
+					}					
+					tabledata.push('<td>'+d.driver_name +'</td>');
+					tabledata.push('<td>'+d.route_name +'</td>');
+					tabledata.push('<td>'+d.timestamp +'</td>');
+					tabledata.push('<td>'+d.longitude.substring(0,7) +'</td>');
+					tabledata.push('<td>'+d.latitude.substring(0,7) +'</td>');
+					tabledata.push('<td>'+d.violation +'</td>');
+					tabledata.push('<td>'+d.total_violations +'</td>');
+					tabledata.push('</tr>');
+					//pushing data to table data
+					
+				});
+				tabledata.push('</tbody>');
+				//making data tabuler
+				
+				$('#maptable').html("");
+//				debugger;
+				$('#maptable').html(tabledata.join());
+				
+				//building datatable
+				$('#maptable').dataTable();
+				
+			});			
+		};
+		
+		$(function() {
+			//debugger;
+			//console.log('app is ready');
+			map = L.map('map').setView([41.112789999999904, -74.162477000000081], 8);
+			
+			L.tileLayer('http://{s}.tiles.mapbox.com/v3/skohli0302.ijog39bj/{z}/{x}/{y}.png', {
+			    attribution: 'Traffic Visualization, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			    maxZoom: 18
+			}).addTo(map);
+			
+			//creating markers layer
+			//app.markers = new L.FeatureGroup();
+			
+			//creating popup layer
+			//app.popuplayer = new L.FeatureGroup();
+			
+			//addding layers to map
+			//app.map.addLayer(app.markers);
+			//app.map.addLayer(app.popuplayer);
+			
+			
+			//creating datatable
+			$('#maptable').dataTable();
+			
+			app.poll();
+			//scheduling with 3 secs interval
+			app.intervalId = setInterval(function() {
+				app.poll();
+            }, 1000);	
+						
+		});
+	</script>
+</body>
+</html>

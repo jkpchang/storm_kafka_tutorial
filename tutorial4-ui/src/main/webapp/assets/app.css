@@ -1,0 +1,12 @@
+table.dataTable tr.odd {
+	background-color: #E2E4FF;	
+}
+
+table.dataTable tr.even {
+	background-color: white;
+	
+}
+
+table.dataTable thead{
+	background-color: #9AA0F1;
+}
