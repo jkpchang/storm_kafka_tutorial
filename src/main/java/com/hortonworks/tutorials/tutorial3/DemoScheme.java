@@ -27,6 +27,6 @@ public class DemoScheme implements Scheme {
   }
 
   public Fields getOutputFields() {
-    return new Fields(message);
+    return new Fields(FIELD_MESSAGE);
   }
 }
