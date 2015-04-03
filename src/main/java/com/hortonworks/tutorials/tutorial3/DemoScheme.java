@@ -23,7 +23,7 @@ public class DemoScheme implements Scheme {
       JSONObject obj = new JSONObject(message);
       String id = obj.getString("_id");
 
-      return new Values(id, message);
+      return new Values(message);
       
     } catch (Exception e) {
       LOG.error(e);
@@ -32,6 +32,6 @@ public class DemoScheme implements Scheme {
   }
 
   public Fields getOutputFields() {
-    return new Fields(FIELD_ID, FIELD_MESSAGE);
+    return new Fields(FIELD_MESSAGE);
   }
 }
