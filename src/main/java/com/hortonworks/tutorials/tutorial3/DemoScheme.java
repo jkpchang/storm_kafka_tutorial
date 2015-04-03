@@ -76,6 +76,7 @@ public class DemoScheme implements Scheme {
           
           try {
             execHiveDDL("use " + databaseName);
+            execHiveDDL("add jar /home/jkpchang/hive-serdes-1.0-SNAPSHOT.jar")
             execHiveDDL(ddl);
           } catch (Exception e) {
             String errorMessage = "Error exexcuting query[" + ddl.toString() + "]";
