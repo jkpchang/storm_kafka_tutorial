@@ -45,7 +45,7 @@ public class DemoProcessingTopology extends BaseTruckEventTopology {
      * required to do a fieldsSorting so that all driver events are sent to the
      * set of bolts
      */
-    spoutConfig.scheme = new SchemeAsMultiScheme(new TruckScheme());
+    spoutConfig.scheme = new SchemeAsMultiScheme(new DemoScheme());
 
     return spoutConfig;
   }
@@ -99,15 +99,9 @@ public class DemoProcessingTopology extends BaseTruckEventTopology {
     builder.setBolt(HDFS_BOLT_ID, hdfsBolt, 2).shuffleGrouping(KAFKA_SPOUT_ID);
   }
 
-  public void configureLogTruckEventBolt(TopologyBuilder builder) {
-    LogTruckEventsBolt logBolt = new LogTruckEventsBolt();
-    builder.setBolt(LOG_TRUCK_BOLT_ID, logBolt).globalGrouping(KAFKA_SPOUT_ID);
-  }
-
   private void buildAndSubmit() throws Exception {
     TopologyBuilder builder = new TopologyBuilder();
     configureKafkaSpout(builder);
-    // configureLogTruckEventBolt(builder);
     configureHDFSBolt(builder);
 
     Config conf = new Config();
