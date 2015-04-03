@@ -36,16 +36,11 @@ public class DemoProcessingTopology extends BaseTruckEventTopology {
     String topic = topologyConfig.getProperty("kafka.topic");
     String zkRoot = topologyConfig.getProperty("kafka.zkRoot");
     String consumerGroupId = "StormSpout";
+    String sourceMetastoreUrl = topologyConfig.getProperty("hive.metastore.url");
+    String databaseName = topologyConfig.getProperty("hive.database.name");
 
     SpoutConfig spoutConfig = new SpoutConfig(hosts, topic, zkRoot, consumerGroupId);
-
-    /*
-     * Custom TruckScheme that will take Kafka message of single truckEvent and
-     * emit a 2-tuple consisting of truckId and truckEvent. This driverId is
-     * required to do a fieldsSorting so that all driver events are sent to the
-     * set of bolts
-     */
-    spoutConfig.scheme = new SchemeAsMultiScheme(new DemoScheme());
+    spoutConfig.scheme = new SchemeAsMultiScheme(new DemoScheme(databaseName, sourceMetastoreUrl));
 
     return spoutConfig;
   }
