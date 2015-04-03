@@ -132,7 +132,7 @@ public class TruckEventProcessingTopology extends BaseTruckEventTopology
         //configureLogTruckEventBolt(builder);
         configureHDFSBolt(builder);
         
-        configureHBaseBolt(builder);
+        //configureHBaseBolt(builder);
         
         Config conf = new Config();
 	conf.setDebug(true);
