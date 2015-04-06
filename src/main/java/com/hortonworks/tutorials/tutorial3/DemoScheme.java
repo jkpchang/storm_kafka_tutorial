@@ -24,7 +24,7 @@ public class DemoScheme implements Scheme {
   
   private String databaseName;
   private String sourceMetastoreUrl;
-//  public static HashMap current_fields = new HashMap();
+  public static ArrayList current_fields = new ArrayList();
   
   public DemoScheme (String databaseName, String sourceMetasoureUrl) {
     this.databaseName = databaseName;
@@ -76,7 +76,6 @@ public class DemoScheme implements Scheme {
           
           try {
             execHiveDDL("use " + databaseName);
-            execHiveDDL("add jar /home/jkpchang/hive-serdes-1.0-SNAPSHOT.jar");
             execHiveDDL(ddl);
           } catch (Exception e) {
             String errorMessage = "Error exexcuting query[" + ddl.toString() + "]";
@@ -86,8 +85,18 @@ public class DemoScheme implements Scheme {
           
         }
       }
+      
+      // turn message into "|" delimited strings
+      String id = obj.get("_id").toString();
+      String user_id = obj.get("user_id").toString();
+      String age = obj.get("age").toString();
+      String status = obj.get("status").toString();
+      String new_message = new StringBuilder().append(id).append(",")
+          .append(user_id).append(",")
+          .append(age).append(",")
+          .append(status).toString();
 
-      return new Values(message);
+      return new Values(new_message);
       
     } catch (Exception e) {
       LOG.error(e);
