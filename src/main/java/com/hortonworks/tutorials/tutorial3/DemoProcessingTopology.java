@@ -91,7 +91,7 @@ public class DemoProcessingTopology extends BaseTruckEventTopology {
 
     // int hdfsBoltCount =
     // Integer.valueOf(topologyConfig.getProperty("hdfsbolt.thread.count"));
-    builder.setBolt(HDFS_BOLT_ID, hdfsBolt, 1).shuffleGrouping(KAFKA_SPOUT_ID);
+    builder.setBolt(HDFS_BOLT_ID, hdfsBolt, 2).shuffleGrouping(KAFKA_SPOUT_ID);
   }
 
   private void buildAndSubmit() throws Exception {
