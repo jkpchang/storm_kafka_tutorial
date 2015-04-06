@@ -55,8 +55,8 @@ public class DemoScheme implements Scheme {
     try {
       String message = new String(bytes, "UTF-8");
 
-//      // parse id from object
-//      JSONObject obj = new JSONObject(message);
+      // parse id from object
+      JSONObject obj = new JSONObject(message);
 //      
 //      // get all top level attribute names from object
 //      JSONArray attribute_names = obj.names();
@@ -86,17 +86,17 @@ public class DemoScheme implements Scheme {
 //        }
 //      }
 //      
-//      // turn message into "|" delimited strings
-//      String id = obj.get("_id").toString();
-//      String user_id = obj.get("user_id").toString();
-//      String age = obj.get("age").toString();
-//      String status = obj.get("status").toString();
-//      String new_message = new StringBuilder().append(id).append(",")
-//          .append(user_id).append(",")
-//          .append(age).append(",")
-//          .append(status).toString();
+      // turn message into "|" delimited strings
+      String id = obj.get("_id").toString();
+      String user_id = obj.get("user_id").toString();
+      String age = obj.get("age").toString();
+      String status = obj.get("status").toString();
+      String new_message = new StringBuilder().append(id).append(",")
+          .append(user_id).append(",")
+          .append(age).append(",")
+          .append(status).toString();
 
-      return new Values(message);
+      return new Values(new_message);
       
     } catch (Exception e) {
       LOG.error(e);
