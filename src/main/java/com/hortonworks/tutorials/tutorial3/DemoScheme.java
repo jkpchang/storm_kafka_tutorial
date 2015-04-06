@@ -55,48 +55,48 @@ public class DemoScheme implements Scheme {
     try {
       String message = new String(bytes, "UTF-8");
 
-      // parse id from object
-      JSONObject obj = new JSONObject(message);
-      
-      // get all top level attribute names from object
-      JSONArray attribute_names = obj.names();
-      List<String> new_attribute_names = new ArrayList<String>();
-      for (int i = 0; i < attribute_names.length(); i++) {
-        Object attribute_name = (String) attribute_names.get(i);
-        if (attribute_name != "_id" && attribute_name != "user_id" && attribute_name != "age" && attribute_name != "status") {
-          new_attribute_names.add(attribute_name.toString());
-        }
-      }
-      
-      if (new_attribute_names.size() > 0) {
-        for (String new_attribute_name: new_attribute_names) {
+//      // parse id from object
+//      JSONObject obj = new JSONObject(message);
+//      
+//      // get all top level attribute names from object
+//      JSONArray attribute_names = obj.names();
+//      List<String> new_attribute_names = new ArrayList<String>();
+//      for (int i = 0; i < attribute_names.length(); i++) {
+//        Object attribute_name = (String) attribute_names.get(i);
+//        if (attribute_name != "_id" && attribute_name != "user_id" && attribute_name != "age" && attribute_name != "status") {
+//          new_attribute_names.add(attribute_name.toString());
+//        }
+//      }
+//      
+//      if (new_attribute_names.size() > 0) {
+//        for (String new_attribute_name: new_attribute_names) {
+//
+//          String ddl = "alter table demo_messages_onefold add columns (" + new_attribute_name + " string)";
+//          startSessionState(sourceMetastoreUrl);
+//          
+//          try {
+//            execHiveDDL("use " + databaseName);
+//            execHiveDDL(ddl);
+//          } catch (Exception e) {
+//            String errorMessage = "Error exexcuting query[" + ddl.toString() + "]";
+//            LOG.error(errorMessage, e);
+//            throw new RuntimeException(errorMessage, e);
+//          }
+//          
+//        }
+//      }
+//      
+//      // turn message into "|" delimited strings
+//      String id = obj.get("_id").toString();
+//      String user_id = obj.get("user_id").toString();
+//      String age = obj.get("age").toString();
+//      String status = obj.get("status").toString();
+//      String new_message = new StringBuilder().append(id).append(",")
+//          .append(user_id).append(",")
+//          .append(age).append(",")
+//          .append(status).toString();
 
-          String ddl = "alter table demo_messages_onefold add columns (" + new_attribute_name + " string)";
-          startSessionState(sourceMetastoreUrl);
-          
-          try {
-            execHiveDDL("use " + databaseName);
-            execHiveDDL(ddl);
-          } catch (Exception e) {
-            String errorMessage = "Error exexcuting query[" + ddl.toString() + "]";
-            LOG.error(errorMessage, e);
-            throw new RuntimeException(errorMessage, e);
-          }
-          
-        }
-      }
-      
-      // turn message into "|" delimited strings
-      String id = obj.get("_id").toString();
-      String user_id = obj.get("user_id").toString();
-      String age = obj.get("age").toString();
-      String status = obj.get("status").toString();
-      String new_message = new StringBuilder().append(id).append(",")
-          .append(user_id).append(",")
-          .append(age).append(",")
-          .append(status).toString();
-
-      return new Values(new_message);
+      return new Values(message);
       
     } catch (Exception e) {
       LOG.error(e);
