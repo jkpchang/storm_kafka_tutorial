@@ -28,9 +28,9 @@ public class DemoScheme implements Scheme {
   private String sourceMetastoreUrl;
   private boolean testMode = false;
 
-  public static String[] orig_fields = { "_id", "user_id", "age", "status" };
-  public static ArrayList<String> current_fields = new ArrayList<String>(Arrays.asList(orig_fields));
-  public static HashMap<String, String> data_type_map = new HashMap<String, String>();
+  public String[] orig_fields = { "_id", "user_id", "age", "status" };
+  public ArrayList<String> current_fields = new ArrayList<String>(Arrays.asList(orig_fields));
+  public HashMap<String, String> data_type_map = new HashMap<String, String>();
 
   public DemoScheme(String databaseName, String sourceMetasoureUrl) {
     this.databaseName = databaseName;
@@ -185,7 +185,10 @@ public class DemoScheme implements Scheme {
           addColumn(attribute_name, attribute_data_type);
         } else {
           String old_data_type = data_type_map.get(attribute_name);
+          LOG.error("comparing " + attribute_name + " " + attribute_value + " " + attribute_data_type + " " + old_data_type);
+          
           if (! old_data_type.equals(attribute_data_type)) {
+            LOG.error("data type not found in map");
             updateColumn(attribute_name, compareDataType(attribute_data_type, old_data_type));
           }
         }
