@@ -194,6 +194,10 @@ public class DemoScheme implements Scheme {
         String attribute_name = (String) attribute_names.get(i);
         String attribute_value = jsonObj.getString(attribute_name);
         String attribute_data_type = getDataType(attribute_value);
+        
+        if (attribute_name.equals("_id")) {
+          continue;
+        }
 
         if (!current_fields.contains(attribute_name)) {
           addColumn(attribute_name, attribute_data_type);
