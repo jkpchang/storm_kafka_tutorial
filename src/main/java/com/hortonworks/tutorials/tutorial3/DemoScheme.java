@@ -61,7 +61,7 @@ public class DemoScheme implements Scheme {
 
   public void initialize() {
     for (String field : current_fields) {
-      if (field.equals("age")) {
+      if (field.equals("stripe_customer_id") || field.equals("time") || field.equals("num_riders")) {
         data_type_map.put(field, "bigint");
       } else {
         data_type_map.put(field, "string");
@@ -147,7 +147,7 @@ public class DemoScheme implements Scheme {
   }
 
   public void addColumn(String column_name, String data_type) {
-    String ddl = "alter table uber_events_streaming add columns (" + column_name + " " + data_type + ")";
+    String ddl = "alter table uber_events_onefold_streaming add columns (" + column_name + " " + data_type + ")";
     startSessionState(sourceMetastoreUrl);
 
     try {
@@ -164,7 +164,7 @@ public class DemoScheme implements Scheme {
   }
   
   public void updateColumn(String column_name, String data_type) {
-    String ddl = "alter table uber_events_streaming change " + column_name + " " + column_name + " " +  data_type;
+    String ddl = "alter table uber_events_onefold_streaming change " + column_name + " " + column_name + " " +  data_type;
     startSessionState(sourceMetastoreUrl);
 
     try {
