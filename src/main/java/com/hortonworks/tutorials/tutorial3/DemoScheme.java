@@ -28,7 +28,21 @@ public class DemoScheme implements Scheme {
   private String sourceMetastoreUrl;
   private boolean testMode = false;
 
-  public String[] orig_fields = { "_id", "user_id", "age", "status" };
+  public String[] orig_fields = { 
+      "app_version"                               ,   
+      "stripe_customer_id"                        ,   
+      "time"                                      ,   
+      "event"                                     ,   
+      "utm_campaign"                              ,   
+      "carrier"                                   ,   
+      "city"                                      ,   
+      "hash_code"                                 ,   
+      "device"                                    ,   
+      "distinct_id"                               ,   
+      "model"                                     ,   
+      "stripe_charge_id"                          ,   
+      "num_riders"
+  };
   public ArrayList<String> current_fields = new ArrayList<String>(Arrays.asList(orig_fields));
   public HashMap<String, String> data_type_map = new HashMap<String, String>();
 
@@ -133,7 +147,7 @@ public class DemoScheme implements Scheme {
   }
 
   public void addColumn(String column_name, String data_type) {
-    String ddl = "alter table demo_messages_onefold add columns (" + column_name + " " + data_type + ")";
+    String ddl = "alter table uber_events_streaming add columns (" + column_name + " " + data_type + ")";
     startSessionState(sourceMetastoreUrl);
 
     try {
@@ -150,7 +164,7 @@ public class DemoScheme implements Scheme {
   }
   
   public void updateColumn(String column_name, String data_type) {
-    String ddl = "alter table demo_messages_onefold change " + column_name + " " + column_name + " " +  data_type;
+    String ddl = "alter table uber_events_streaming change " + column_name + " " + column_name + " " +  data_type;
     startSessionState(sourceMetastoreUrl);
 
     try {
